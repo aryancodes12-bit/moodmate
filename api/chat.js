@@ -1,26 +1,24 @@
-// Vercel Serverless Function — replaces Express server.js
 export default async function handler(req, res) {
-  // CORS headers
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
-  }
-
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
-  }
+  if (req.method === 'OPTIONS') return res.status(200).end();
+  if (req.method !== 'POST') return res.status(200).json({ error: 'Use POST' });
 
   try {
-    const { userPrompt, system } = req.body;
+    const { userPrompt, system } = req.body || {};
+    if (!userPrompt) return res.status(400).json({ error: 'userPrompt required' });
 
-    if (!userPrompt) {
-      return res.status(400).json({ error: 'userPrompt is required' });
-    }
+    // Use more tokens for complex requests (weekly plan needs ~3000)
+    const isComplexRequest = system && (
+      system.includes('7-day') || 
+      system.includes('weekly plan') ||
+      system.includes('days') ||
+      userPrompt.length > 500
+    );
 
-    const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+    const groqRes = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -28,7 +26,8 @@ export default async function handler(req, res) {
       },
       body: JSON.stringify({
         model: 'llama-3.3-70b-versatile',
-        max_tokens: 1024,
+        max_tokens: isComplexRequest ? 4000 : 1024,
+        temperature: 0.7,
         messages: [
           ...(system ? [{ role: 'system', content: system }] : []),
           { role: 'user', content: userPrompt },
@@ -36,18 +35,18 @@ export default async function handler(req, res) {
       }),
     });
 
-    if (!response.ok) {
-      const err = await response.text();
-      console.error('Groq error:', err);
-      return res.status(response.status).json({ error: 'Groq API error', details: err });
+    if (!groqRes.ok) {
+      const errText = await groqRes.text();
+      console.error('Groq error:', errText);
+      return res.status(500).json({ error: 'Groq API error', details: errText });
     }
 
-    const data = await response.json();
+    const data = await groqRes.json();
     const text = data.choices?.[0]?.message?.content || '';
     return res.status(200).json({ text });
 
   } catch (error) {
-    console.error('Server error:', error);
-    return res.status(500).json({ error: 'Internal server error', message: error.message });
+    console.error('Handler error:', error);
+    return res.status(500).json({ error: error.message });
   }
 }
