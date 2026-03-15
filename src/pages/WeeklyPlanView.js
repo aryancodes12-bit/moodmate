@@ -48,41 +48,30 @@ const WeeklyPlanView = ({ session, history }) => {
     setGenerating(true); setError('');
 
     try {
-      const recentEntries = history.slice(0, 14).map(e =>
-        `${new Date(e.timestamp).toLocaleDateString('en', { weekday: 'short' })}: mood ${e.mood}/5 (${moodMap[e.mood].label})${e.sentiment ? `, ${e.sentiment}` : ''}${e.text ? ` — "${e.text.slice(0, 80)}"` : ''}`
-      ).join('\n');
+      const recentEntries = history.slice(0, 7).map(e =>
+        `${new Date(e.timestamp).toLocaleDateString('en', { weekday: 'short' })}: mood ${e.mood}/5 (${moodMap[e.mood].label})`
+      ).join(', ');
 
       const onboarding = (() => {
         try { return JSON.parse(localStorage.getItem(`mm-onboarding-${session.user.id}`) || '{}'); } catch { return {}; }
       })();
 
-      const system = `You are a compassionate AI wellness therapist creating a personalized 7-day mental wellness plan. 
-Respond ONLY with valid JSON (no markdown) in this exact structure:
-{
-  "weekTheme": "<3-5 word inspiring theme for this week>",
-  "overview": "<2-3 sentence overview of this week's focus based on their patterns>",
-  "days": [
-    {
-      "day": "Monday",
-      "focus": "<3-5 word daily focus>",
-      "morningTask": { "title": "<task name>", "duration": "<5-10 min>", "description": "<what to do>", "emoji": "<emoji>" },
-      "eveningTask": { "title": "<task name>", "duration": "<5-15 min>", "description": "<what to do>", "emoji": "<emoji>" },
-      "affirmation": "<one powerful daily affirmation>",
-      "journalPrompt": "<one specific journaling question for today>",
-      "mood_goal": <target mood 1-5>
-    }
-  ] (7 items for Mon-Sun),
-  "weeklyGoal": "<one achievable weekly goal>",
-  "successMetric": "<how to know if the week went well>"
-}`;
+      const goals = onboarding.goal ? (Array.isArray(onboarding.goal) ? onboarding.goal.join(', ') : onboarding.goal) : 'wellness';
+
+      const system = `You are Aura. Create a 7-day mental wellness plan. Return ONLY a single-line compact JSON with no newlines inside strings. Use this exact format:
+{"weekTheme":"string","overview":"string","weeklyGoal":"string","days":[{"day":"Monday","focus":"string","morningTask":{"title":"string","duration":"5 min","description":"string","emoji":"🌅"},"eveningTask":{"title":"string","duration":"10 min","description":"string","emoji":"🌙"},"affirmation":"string","journalPrompt":"string","mood_goal":3},{"day":"Tuesday","focus":"string","morningTask":{"title":"string","duration":"5 min","description":"string","emoji":"🌅"},"eveningTask":{"title":"string","duration":"10 min","description":"string","emoji":"🌙"},"affirmation":"string","journalPrompt":"string","mood_goal":3},{"day":"Wednesday","focus":"string","morningTask":{"title":"string","duration":"5 min","description":"string","emoji":"🌿"},"eveningTask":{"title":"string","duration":"10 min","description":"string","emoji":"🌙"},"affirmation":"string","journalPrompt":"string","mood_goal":3},{"day":"Thursday","focus":"string","morningTask":{"title":"string","duration":"5 min","description":"string","emoji":"💪"},"eveningTask":{"title":"string","duration":"10 min","description":"string","emoji":"🌙"},"affirmation":"string","journalPrompt":"string","mood_goal":3},{"day":"Friday","focus":"string","morningTask":{"title":"string","duration":"5 min","description":"string","emoji":"✨"},"eveningTask":{"title":"string","duration":"10 min","description":"string","emoji":"🌙"},"affirmation":"string","journalPrompt":"string","mood_goal":4},{"day":"Saturday","focus":"string","morningTask":{"title":"string","duration":"5 min","description":"string","emoji":"🎨"},"eveningTask":{"title":"string","duration":"10 min","description":"string","emoji":"🌙"},"affirmation":"string","journalPrompt":"string","mood_goal":4},{"day":"Sunday","focus":"string","morningTask":{"title":"string","duration":"5 min","description":"string","emoji":"🧘"},"eveningTask":{"title":"string","duration":"10 min","description":"string","emoji":"🌙"},"affirmation":"string","journalPrompt":"string","mood_goal":4}]}
+Replace every "string" with SHORT text (max 8 words). No markdown. No extra whitespace.`;
 
       const raw = await callAI(
-        `User's recent mood history:\n${recentEntries}\n\nUser goals: ${onboarding.goal ? (Array.isArray(onboarding.goal) ? onboarding.goal.join(', ') : onboarding.goal) : 'general wellness'}\nStress level: ${onboarding.stress_freq || 'sometimes'}\n\nCreate a highly personalized 7-day plan starting Monday.`,
+        `Mood history: ${recentEntries}. User goals: ${goals}.`,
         system
       );
 
-      const parsed = JSON.parse(raw.replace(/```json|```/g, '').trim());
-
+      let jsonStr = raw.replace(/```json|```/g, '').trim();
+      const start = jsonStr.indexOf('{');
+      const end = jsonStr.lastIndexOf('}');
+      if (start !== -1 && end !== -1) jsonStr = jsonStr.slice(start, end + 1);
+      const parsed = JSON.parse(jsonStr)
       // Save to Supabase
       await supabase.from('weekly_plans').upsert({
         user_id: session.user.id,
