@@ -1,7 +1,7 @@
 {
   "short_name": "MoodMate",
   "name": "MoodMate — AI Mental Wellness",
-  "description": "Your AI-powered mental wellness companion. Journal moods, chat with Aura, track patterns.",
+  "description": "Your AI-powered mental wellness companion.",
   "icons": [
     {
       "src": "favicon.ico",
@@ -10,15 +10,9 @@
       "purpose": "any"
     },
     {
-      "src": "logo192.png",
+      "src": "sidebar.png",
       "type": "image/png",
-      "sizes": "192x192",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "logo512.png",
-      "type": "image/png",
-      "sizes": "512x512",
+      "sizes": "any",
       "purpose": "any maskable"
     }
   ],
@@ -28,22 +22,9 @@
   "orientation": "portrait-primary",
   "theme_color": "#818cf8",
   "background_color": "#0d0f1a",
-  "categories": ["health", "lifestyle", "productivity"],
-  "screenshots": [],
-  "shortcuts": [
-    {
-      "name": "New Journal Entry",
-      "short_name": "Journal",
-      "description": "Write a new journal entry",
-      "url": "/?view=journal",
-      "icons": [{ "src": "logo192.png", "sizes": "192x192" }]
-    },
-    {
-      "name": "Chat with Aura",
-      "short_name": "Aura",
-      "description": "Talk to your AI wellness companion",
-      "url": "/?view=chat",
-      "icons": [{ "src": "logo192.png", "sizes": "192x192" }]
-    }
+  "categories": [
+    "health",
+    "lifestyle",
+    "productivity"
   ]
 }
