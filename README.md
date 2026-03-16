@@ -1,31 +1,99 @@
-# MoodMate — Setup Guide
-
-## Step 1 — Install dependencies
-```bash
-npm install
-npm install express cors concurrently
-```
-
-## Step 2 — Get FREE Groq API Key
-1. Go to https://console.groq.com/
-2. Sign up (free, no credit card)
-3. Click "API Keys" → "Create API Key"
-4. Copy the key
-
-## Step 3 — Add key to .env file
-Open `.env` and replace `your_groq_api_key_here`:
-```
-GROQ_API_KEY=gsk_xxxxxxxxxxxxxxxxxx
-```
-
-## Step 4 — Run the app
-```bash
-npm run dev
-```
-
-Opens at: http://localhost:3000 ✅
-
+# 🌙 MoodMate — AI Mental Wellness App
+ 
+> Your AI-powered mental wellness companion. Journal your moods, chat with Aura, and understand your emotional patterns.
+ 
+**Live Demo:** [moodmate-web.vercel.app](https://moodmate-web.vercel.app)
+ 
 ---
+ 
+## ✨ Features
+ 
+| Feature | Description |
+|---|---|
+| 📓 AI Journal | Write entries, get AI reflection & actionable steps from Aura |
+| 💬 Aura Chat | Real-time AI wellness companion |
+| 🧠 Mood Prediction | AI predicts tomorrow's mood based on your patterns |
+| 🎯 Weekly Plan | Personalized 7-day AI therapy plan |
+| 🫂 Community | Anonymous shared entries — you're not alone |
+| 📊 Analytics | Mood charts, heatmap calendar, sentiment analysis |
+| 🏆 Achievements | 10 unlockable badges with confetti |
+| 🎙️ Voice Journal | Hindi, English & Hinglish voice input |
+| 🌿 Relief Exercises | Box breathing, grounding, PMR |
+| 🎵 Ambient Sounds | Rain, ocean, forest, fire |
+| 📱 PWA | Installable on mobile & desktop |
+| 💰 Pricing | Free + Pro plan |
+| 👨‍⚕️ Doctor Connect | Coming soon — AI + therapist hybrid |
+ 
+---
+ 
+## 🏗️ Architecture
+ 
+```
+User / Browser
+      │  visits
+      ▼
+React App (moodmate-web.vercel.app)
+      │                        │
+      │ auth + journal data    │ AI chat request
+      ▼                        ▼
+  Supabase                api/chat.js
+  PostgreSQL           (Vercel Serverless)
+  + Auth                      │
+      │                       │ Groq API call
+  ┌───┴──────────┐            ▼
+  journal_entries         Groq API
+  community_posts      Llama 3.3 70B
+  weekly_plans
+  
+> server.js (Express) — local dev only, replaced by api/chat.js on Vercel
+```
+ 
+ 
+**Production:** React → Vercel Serverless Function → Groq API  
+**Database:** React → Supabase directly (with RLS policies)  
+**Deploy:** GitHub push → Vercel auto-deploys
+ 
+---
+ 
+## 🛠️ Tech Stack
+ 
+- **Frontend:** React 19, Tailwind CSS, Glassmorphism UI
+- **Serverless:** Vercel (api/chat.js)
+- **Local Dev Server:** Express.js (server.js)
+- **Database:** Supabase (PostgreSQL + Auth)
+- **AI:** Groq API — Llama 3.3 70B (free tier)
+- **Auth:** Email/Password + Google OAuth
 
-**How it works:** React (port 3000) → Express proxy (port 3001) → Groq API
-Your API key stays safe on the server, browser never sees it.
+- ## 🏗️ WorkFlow
+- ![MoodMate Architecture](public/architecture.svg)
+  
+- ## 📁 Project Structure
+ 
+```
+moodmate/
+├── api/
+│   └── chat.js              ← Vercel serverless function (Groq proxy)
+├── server.js                ← Express proxy for local development
+├── public/
+│   ├── sw.js                ← Service Worker (PWA)
+│   ├── manifest.json        ← PWA manifest
+│   └── sidebar.png          ← App icon
+└── src/
+    ├── App.js               ← Main app + all views
+    ├── constants.js         ← moodMap, callAI, achievements
+    ├── supabase.js          ← Supabase client
+    ├── components/UI.js     ← GlobalStyles, Icons, components
+    ├── hooks/
+    │   ├── useVoice.js      ← Voice journaling hook
+    │   └── useReminder.js   ← Push notification reminders
+    └── pages/
+        ├── LandingPage.js
+        ├── AuthScreen.js
+        ├── OnboardingPage.js
+        ├── DashboardView.js
+        ├── MoodPredictionView.js
+        ├── CommunityView.js
+        ├── WeeklyPlanView.js
+        ├── PricingView.js
+        ├── DoctorConnectView.js
+        └── ProfileView.js
