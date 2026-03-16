@@ -97,3 +97,8 @@ moodmate/
         ├── PricingView.js
         ├── DoctorConnectView.js
         └── ProfileView.js
+## 👥 Made By
+ 
+**Aryan Jaiswal-Developer**
+ 
+*Not a substitute for professional medical advice. Data secured us.*
