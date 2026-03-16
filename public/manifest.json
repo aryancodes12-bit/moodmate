@@ -12,7 +12,7 @@
     {
       "src": "sidebar.png",
       "type": "image/png",
-      "sizes": "any",
+      "sizes": "192x192 512x512",
       "purpose": "any maskable"
     }
   ],
