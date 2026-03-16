@@ -37,7 +37,7 @@ const WeeklyPlanView = ({ session, history }) => {
           if (saved) setCompletedDays(JSON.parse(saved));
           setActiveDay(todayDayIndex);
         }
-      } catch {}
+      } catch { }
       setLoading(false);
     };
     loadPlan();
@@ -103,7 +103,7 @@ Replace every "string" with SHORT text (max 8 words). No markdown. No extra whit
   );
 
   return (
-    <div style={{ maxWidth: 720, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 20 }} className="page-enter">
+    <div style={{ maxWidth: 720, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 20, paddingTop: 16 }} className="page-enter">
 
       {/* Header */}
       <div style={{ textAlign: 'center', marginBottom: 4 }}>

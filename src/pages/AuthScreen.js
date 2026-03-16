@@ -55,7 +55,7 @@ const AuthScreen = ({ onBack }) => {
       <div style={{ width:'100%', maxWidth:420 }}>
         {/* Logo */}
         <div style={{ textAlign:'center', marginBottom:36 }}>
-          <div style={{ width:68, height:68, background:'linear-gradient(135deg,#818cf8,#c084fc)', borderRadius:20, display:'flex', alignItems:'center', justifyContent:'center', fontSize:34, margin:'0 auto 16px', boxShadow:'0 8px 32px rgba(129,140,248,0.4)' }}>🌙</div>
+          <img src="/sidebar.png" alt="MoodMate" style={{ width: 68, height: 68, borderRadius: 20, margin: '0 auto 16px', boxShadow: '0 8px 32px rgba(129,140,248,0.4)', objectFit: 'cover', display: 'block' }} />
           <h1 style={{ fontSize:26, fontWeight:800, background:'linear-gradient(135deg,#818cf8,#c084fc)', WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent' }}>MoodMate</h1>
           <p style={{ color:'var(--muted)', fontSize:13, marginTop:4 }}>Your personal mental wellness companion</p>
         </div>

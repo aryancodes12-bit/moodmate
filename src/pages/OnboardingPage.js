@@ -49,7 +49,7 @@ const OnboardingPage = ({ onComplete, userName }) => {
 
         {/* Header */}
         <div style={{ textAlign:'center', marginBottom:40 }}>
-          <div style={{ width:60, height:60, background:'linear-gradient(135deg,#818cf8,#c084fc)', borderRadius:18, display:'flex', alignItems:'center', justifyContent:'center', fontSize:30, margin:'0 auto 16px' }}>🌙</div>
+          <img src="/sidebar.png" alt="MoodMate" style={{ width: 60, height: 60, borderRadius: 18, margin: '0 auto 16px', objectFit: 'cover', display: 'block' }} />
           <h1 style={{ fontSize:22, fontWeight:700 }}>
             {step === 0 ? `Welcome${userName ? ', ' + userName.split(' ')[0] : ''}! 👋` : 'Personalizing your experience...'}
           </h1>

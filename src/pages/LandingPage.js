@@ -46,7 +46,7 @@ const LandingPage = ({ onGetStarted, theme, setTheme }) => {
         <div style={{ maxWidth:1100, margin:'0 auto', height:68, display:'flex', alignItems:'center', justifyContent:'space-between' }}>
           {/* Logo */}
           <div style={{ display:'flex', alignItems:'center', gap:10 }}>
-            <div style={{ width:38, height:38, background:'linear-gradient(135deg,#818cf8,#c084fc)', borderRadius:12, display:'flex', alignItems:'center', justifyContent:'center', fontSize:20 }}>🌙</div>
+            <img src="/sidebar.png" alt="MoodMate" style={{ width:38, height:38, borderRadius:12, objectFit:'cover' }} />
             <span style={{ fontSize:20, fontWeight:800, background:'linear-gradient(135deg,#818cf8,#c084fc)', WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent' }}>MoodMate</span>
           </div>
 
@@ -124,7 +124,7 @@ const LandingPage = ({ onGetStarted, theme, setTheme }) => {
         </div>
         <div className="hide-mobile" style={{ position:'absolute', right:'5%', top:'40%', animation:'float2 7s ease-in-out infinite' }}>
           <div className="glass" style={{ padding:'16px 20px', borderRadius:16, textAlign:'center' }}>
-            <div style={{ fontSize:28 }}>🌙</div>
+            <img src="/sidebar.png" alt="Aura" style={{ width: 32, height: 32, borderRadius: 8, margin: '0 auto', objectFit: 'cover' }} />
             <p style={{ fontSize:12, color:'var(--muted)', marginTop:4 }}>Aura is here</p>
           </div>
         </div>
@@ -207,7 +207,7 @@ const LandingPage = ({ onGetStarted, theme, setTheme }) => {
       {/* ── CTA ── */}
       <section style={{ padding:'100px 24px', textAlign:'center' }}>
         <div style={{ maxWidth:600, margin:'0 auto' }}>
-          <div style={{ fontSize:60, marginBottom:24 }}>🌙</div>
+          <img src="/sidebar.png" alt="MoodMate" style={{ width: 80, height: 80, borderRadius: 20, margin: '0 auto 24px', objectFit: 'cover', display: 'block' }} />
           <h2 style={{ fontSize:'clamp(28px,5vw,44px)', fontWeight:800, marginBottom:16 }}>
             Start Your Mental Wellness Journey Today
           </h2>
@@ -223,7 +223,7 @@ const LandingPage = ({ onGetStarted, theme, setTheme }) => {
       {/* ── Footer ── */}
       <footer style={{ textAlign:'center', padding:'32px 24px', borderTop:'1px solid var(--glass-border)', color:'var(--muted)', fontSize:13 }}>
         <div style={{ display:'flex', alignItems:'center', justifyContent:'center', gap:8, marginBottom:8 }}>
-          <span style={{ fontSize:18 }}>🌙</span>
+          <img src="/sidebar.png" alt="MoodMate" style={{ width: 24, height: 24, borderRadius: 6, objectFit: 'cover' }} />
           <span style={{ fontWeight:700, color:'var(--text)' }}>MoodMate</span>
         </div>
         <p>Not a substitute for professional medical advice.</p>

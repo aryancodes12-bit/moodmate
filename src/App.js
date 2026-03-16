@@ -524,7 +524,7 @@ function App() {
     }
   };
 
-  if (appScreen === 'loading') return (<><GlobalStyles theme={theme} /><div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: 16 }}><div style={{ fontSize: 52 }}>🌙</div><Spin size={32} /><p style={{ color: 'var(--muted)', fontSize: 14 }}>Loading MoodMate...</p></div></>);
+  if (appScreen === 'loading') return (<><GlobalStyles theme={theme} /><div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: 16 }}><img src="/sidebar.png" alt="MoodMate Logo" style={{ width: 64, height: 64, borderRadius: 16 }} /><Spin size={32} /><p style={{ color: 'var(--muted)', fontSize: 14 }}>Loading MoodMate...</p></div></>);
   if (appScreen === 'landing') return (<><GlobalStyles theme={theme} /><LandingPage onGetStarted={() => setAppScreen('auth')} theme={theme} setTheme={setTheme} /></>);
   if (appScreen === 'auth') return (<><GlobalStyles theme={theme} /><AuthScreen onBack={() => setAppScreen('landing')} /></>);
   if (appScreen === 'onboarding') return (<><GlobalStyles theme={theme} /><OnboardingPage onComplete={(answers) => { localStorage.setItem(`mm-onboarded-${session.user.id}`, '1'); localStorage.setItem(`mm-onboarding-${session.user.id}`, JSON.stringify(answers)); setAppScreen('app'); }} userName={session?.user?.user_metadata?.full_name || ''} /></>);
@@ -537,7 +537,7 @@ function App() {
       {/* ── Left Sidebar ── */}
       <aside style={{ position: 'fixed', top: 0, left: 0, bottom: 0, zIndex: 50, width: 220, display: 'flex', flexDirection: 'column', background: 'var(--nav-bg)', backdropFilter: 'blur(24px)', borderRight: '1px solid var(--glass-border)', padding: '20px 12px', overflowY: 'auto' }} className="desktop-nav">
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer', padding: '4px 8px 20px', borderBottom: '1px solid var(--glass-border)', marginBottom: 12 }} onClick={() => setView('dashboard')}>
-          <div style={{ width: 36, height: 36, background: 'linear-gradient(135deg,#818cf8,#c084fc)', borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, flexShrink: 0 }}>🌙</div>
+          <img src="/sidebar.png" alt="MoodMate" style={{ width: 36, height: 36, borderRadius: 10, flexShrink: 0, objectFit: 'cover' }} />
           <span style={{ fontSize: 16, fontWeight: 800, background: 'linear-gradient(135deg,#818cf8,#c084fc)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>MoodMate</span>
         </div>
         <nav style={{ display: 'flex', flexDirection: 'column', gap: 1, flex: 1, overflowY: 'auto' }}>
@@ -578,7 +578,7 @@ function App() {
       <div style={{ display: 'none' }} className="mob-topbar">
         <header style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 50, background: 'var(--nav-bg)', backdropFilter: 'blur(24px)', borderBottom: '1px solid var(--glass-border)', padding: '0 16px', height: 56, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer' }} onClick={() => setView('dashboard')}>
-            <div style={{ width: 30, height: 30, background: 'linear-gradient(135deg,#818cf8,#c084fc)', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 15 }}>🌙</div>
+            <img src="/sidebar.png" alt="MoodMate" style={{ width: 30, height: 30, borderRadius: 8, objectFit: 'cover' }} />
             <span style={{ fontSize: 15, fontWeight: 800, background: 'linear-gradient(135deg,#818cf8,#c084fc)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>MoodMate</span>
           </div>
           <div style={{ display: 'flex', gap: 8 }}>
