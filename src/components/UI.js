@@ -161,7 +161,10 @@ export const GlobalStyles = ({ theme }) => (
       .mob-btn{display:flex!important}
       .mob-topbar{display:block!important}
       .hide-mobile{display:none!important}
-      .main-content { padding-top: 72px !important; }
+      .main-content { padding-top: 68px !important; }
+    }
+    @media(min-width:769px){
+      .main-content { padding-top: 0 !important; margin-top: 0 !important; }
     }
     @media(min-width:769px){
       .mob-btn{display:none!important}

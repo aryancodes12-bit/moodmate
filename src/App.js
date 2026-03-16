@@ -14,12 +14,11 @@ import PricingView from './pages/PricingView';
 import DoctorConnectView from './pages/DoctorConnectView';
 import useVoiceHook, { VOICE_LANGUAGES } from './hooks/useVoice';
 
-// ─── Ambient Player ───────────────────────────────────────────────────────────
 const AmbientPlayer = () => {
   const [active, setActive] = useState(null);
   const ctxRef = useRef(null); const nodesRef = useRef([]);
-  const sounds = [{ id:'rain', emoji:'🌧️', label:'Rain' }, { id:'ocean', emoji:'🌊', label:'Ocean' }, { id:'forest', emoji:'🌿', label:'Forest' }, { id:'fire', emoji:'🔥', label:'Fire' }];
-  const stopAll = () => { nodesRef.current.forEach(n => { try { n.stop(); } catch {} }); nodesRef.current = []; };
+  const sounds = [{ id: 'rain', emoji: '🌧️', label: 'Rain' }, { id: 'ocean', emoji: '🌊', label: 'Ocean' }, { id: 'forest', emoji: '🌿', label: 'Forest' }, { id: 'fire', emoji: '🔥', label: 'Fire' }];
+  const stopAll = () => { nodesRef.current.forEach(n => { try { n.stop(); } catch { } }); nodesRef.current = []; };
   const play = async (id) => {
     if (active === id) { stopAll(); setActive(null); return; }
     stopAll();
@@ -46,7 +45,6 @@ const AmbientPlayer = () => {
   );
 };
 
-// ─── Mood Calendar ────────────────────────────────────────────────────────────
 const MoodCalendar = ({ history }) => {
   const weeks = 18; const today = new Date(); today.setHours(0, 0, 0, 0);
   const start = new Date(today); start.setDate(today.getDate() - weeks * 7 + 1);
@@ -77,7 +75,6 @@ const MoodCalendar = ({ history }) => {
   );
 };
 
-// ─── Journal View ─────────────────────────────────────────────────────────────
 const JournalView = ({ journalText, setJournalText, selectedMood, setSelectedMood, selectedTags, setSelectedTags, handleSubmit, isLoading, aiResponse, getJournalPrompt, isFetchingPrompt, onVoiceUsed, voiceLang, setVoiceLang }) => {
   const mood = moodMap[selectedMood];
   const onVoiceResult = useCallback(text => { setJournalText(text); onVoiceUsed(); }, [setJournalText, onVoiceUsed]);
@@ -89,14 +86,13 @@ const JournalView = ({ journalText, setJournalText, selectedMood, setSelectedMoo
           <div><h2 style={{ fontSize: 22, fontWeight: 700 }}>How are you feeling?</h2><p style={{ fontSize: 13, color: 'var(--muted)', marginTop: 4 }}>Your thoughts are safe here ✦</p></div>
           <div style={{ display: 'flex', gap: 8 }}>
             {supported && (
-              <div style={{ display:'flex', gap:6, alignItems:'center' }}>
-                <select value={voiceLang} onChange={e => setVoiceLang(e.target.value)}
-                  style={{ fontSize:11, padding:'5px 8px', borderRadius:99, width:'auto', minWidth:0 }}>
+              <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+                <select value={voiceLang} onChange={e => setVoiceLang(e.target.value)} style={{ fontSize: 11, padding: '5px 8px', borderRadius: 99, width: 'auto', minWidth: 0 }}>
                   {VOICE_LANGUAGES.map(l => <option key={l.code} value={l.code}>{l.label}</option>)}
                 </select>
-                <button className={`btn btn-sm ${recording ? 'btn-primary' : 'btn-ghost'}`} onClick={() => toggle(journalText)} style={{ gap:5, flexShrink:0 }}>
+                <button className={`btn btn-sm ${recording ? 'btn-primary' : 'btn-ghost'}`} onClick={() => toggle(journalText)} style={{ gap: 5, flexShrink: 0 }}>
                   <Ico icon={Icons.mic} size={14} />
-                  {recording ? <><span className="rec-dot" style={{ width:6, height:6, background:'#fff', borderRadius:'50%', display:'inline-block' }} />Stop</> : 'Voice'}
+                  {recording ? <><span className="rec-dot" style={{ width: 6, height: 6, background: '#fff', borderRadius: '50%', display: 'inline-block' }} />Stop</> : 'Voice'}
                 </button>
               </div>
             )}
@@ -104,16 +100,12 @@ const JournalView = ({ journalText, setJournalText, selectedMood, setSelectedMoo
           </div>
         </div>
         {voiceError && <div style={{ background: 'rgba(248,113,113,.1)', border: '1px solid rgba(248,113,113,.3)', borderRadius: 12, padding: '10px 14px', fontSize: 13, color: '#fca5a5', marginBottom: 12 }}>⚠️ {voiceError}</div>}
-        {recording && !voiceError && <div style={{ background: 'rgba(74,222,128,.08)', border: '1px solid rgba(74,222,128,.3)', borderRadius: 12, padding: '10px 14px', fontSize: 13, color: '#4ade80', marginBottom: 12 }}>🔴 Recording... speak now (live transcription active)</div>}
+        {recording && !voiceError && <div style={{ background: 'rgba(74,222,128,.08)', border: '1px solid rgba(74,222,128,.3)', borderRadius: 12, padding: '10px 14px', fontSize: 13, color: '#4ade80', marginBottom: 12 }}>🔴 Recording... speak now</div>}
         <textarea value={journalText} onChange={e => setJournalText(e.target.value)} placeholder="Write or speak about your day..." style={{ minHeight: 140, marginBottom: 18, lineHeight: 1.7 }} />
-
-        {/* Mood Tags */}
         <div style={{ marginBottom: 18 }}>
           <p style={{ fontSize: 12, fontWeight: 600, color: 'var(--muted)', marginBottom: 10, textTransform: 'uppercase', letterSpacing: '0.06em' }}>🏷️ Add Tags</p>
           <MoodTagSelector selected={selectedTags} onChange={setSelectedTags} allTags={MOOD_TAGS} />
         </div>
-
-        {/* Mood slider */}
         <div style={{ marginBottom: 20 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
             <span style={{ fontSize: 13, color: 'var(--muted)', fontWeight: 500 }}>Mood</span>
@@ -125,12 +117,10 @@ const JournalView = ({ journalText, setJournalText, selectedMood, setSelectedMoo
             {Object.entries(moodMap).map(([k, m]) => <span key={k} style={{ fontSize: 20, cursor: 'pointer', opacity: Number(k) === selectedMood ? 1 : 0.3, transition: 'opacity .2s' }} onClick={() => setSelectedMood(Number(k))}>{m.emoji}</span>)}
           </div>
         </div>
-
         <button className="btn btn-primary" onClick={handleSubmit} disabled={isLoading || !journalText.trim()} style={{ width: '100%', padding: '13px 22px', fontSize: 15 }}>
           {isLoading ? <><Spin size={16} /> Analyzing...</> : <><Ico icon={Icons.sparkle} size={15} /> Save & Get Guidance</>}
         </button>
       </div>
-
       {aiResponse.reflection && !isLoading && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }} className="page-enter">
           <div className="glass" style={{ padding: 22, borderColor: 'rgba(129,140,248,.3)', background: 'rgba(129,140,248,.08)' }}>
@@ -174,13 +164,12 @@ const JournalView = ({ journalText, setJournalText, selectedMood, setSelectedMoo
   );
 };
 
-// ─── Chat View ────────────────────────────────────────────────────────────────
 const ChatView = () => {
   const [messages, setMessages] = useState([{ role: 'aura', text: "Hi, I'm Aura 🌙 I'm here to listen and support you. How are you feeling right now?" }]);
   const [input, setInput] = useState(''); const [isTyping, setIsTyping] = useState(false); const bottomRef = useRef(null);
   useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [messages, isTyping]);
   const onVoiceResult = useCallback(text => setInput(text), []);
-  const { recording, supported, toggle, voiceError } = useVoiceHook(onVoiceResult);
+  const { recording, supported, toggle } = useVoiceHook(onVoiceResult);
   const send = async () => {
     if (!input.trim() || isTyping) return;
     const msg = input.trim(); setInput('');
@@ -214,7 +203,6 @@ const ChatView = () => {
   );
 };
 
-// ─── Analytics View ───────────────────────────────────────────────────────────
 const AnalyticsView = ({ history }) => {
   const avg = history.length ? (history.reduce((s, e) => s + e.mood, 0) / history.length).toFixed(1) : 0;
   const dist = [5, 4, 3, 2, 1].map(m => ({ mood: m, count: history.filter(e => e.mood === m).length, ...moodMap[m] }));
@@ -264,34 +252,26 @@ const AnalyticsView = ({ history }) => {
   );
 };
 
-// ─── History View (with search + filter) ─────────────────────────────────────
-const HistoryView = ({ history, handleGenerateSummary, isGeneratingSummary, weeklySummary, onEmailReport, onExported }) => {
+const HistoryView = ({ history, handleGenerateSummary, isGeneratingSummary, weeklySummary, onExported, onDeleteEntry }) => {
   const [search, setSearch] = useState('');
   const [filterMood, setFilterMood] = useState(0);
-  const [filterTag, setFilterTag] = useState('');
-
   const filtered = history.filter(e => {
     const matchSearch = !search || e.text.toLowerCase().includes(search.toLowerCase()) || (e.aiReflection || '').toLowerCase().includes(search.toLowerCase());
     const matchMood = !filterMood || e.mood === filterMood;
-    const matchTag = !filterTag || (e.tags || []).includes(filterTag);
-    return matchSearch && matchMood && matchTag;
+    return matchSearch && matchMood;
   });
-
   const exportCSV = () => { const h = 'Date,Mood,Label,Sentiment,Tags,Entry,AI Reflection\n'; const rows = history.map(e => `"${new Date(e.timestamp).toLocaleString()}",${e.mood},"${moodMap[e.mood]?.label || ''}","${e.sentiment || ''}","${(e.tags || []).join('; ')}","${(e.text || '').replace(/"/g, '""')}","${(e.aiReflection || '').replace(/"/g, '""')}"`).join('\n'); const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([h + rows], { type: 'text/csv' })); a.download = 'moodmate.csv'; a.click(); onExported(); };
   const exportJSON = () => { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(history, null, 2)], { type: 'application/json' })); a.download = 'moodmate.json'; a.click(); onExported(); };
-
   return (
     <div style={{ maxWidth: 680, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 16 }} className="page-enter">
-      {/* Controls */}
       <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between' }}>
         <button className="btn btn-primary btn-sm" onClick={handleGenerateSummary} disabled={isGeneratingSummary || history.length < 2}>{isGeneratingSummary ? <><Spin size={14} /> Analyzing...</> : <><Ico icon={Icons.sparkle} size={13} /> Summarize Week</>}</button>
         <div style={{ display: 'flex', gap: 8 }}>
           <button className="btn btn-ghost btn-sm" onClick={exportCSV} disabled={!history.length}><Ico icon={Icons.download} size={14} /> CSV</button>
           <button className="btn btn-ghost btn-sm" onClick={exportJSON} disabled={!history.length}><Ico icon={Icons.download} size={14} /> JSON</button>
+          <button onClick={() => { if (window.confirm('Delete ALL ' + history.length + ' entries? This cannot be undone!')) history.forEach(e => onDeleteEntry(e.id)); }} disabled={!history.length} style={{ background: 'rgba(248,113,113,.15)', border: '1px solid rgba(248,113,113,.4)', borderRadius: 99, padding: '7px 14px', fontSize: 12, color: '#f87171', cursor: 'pointer', fontFamily: 'Sora,sans-serif', fontWeight: 600 }}>🗑️ Clear All</button>
         </div>
       </div>
-
-      {/* Search + Filter */}
       <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
         <div style={{ flex: 1, minWidth: 200, position: 'relative' }}>
           <span style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', width: 16, height: 16, display: 'flex', color: 'var(--muted)' }}>{Icons.search}</span>
@@ -302,15 +282,10 @@ const HistoryView = ({ history, handleGenerateSummary, isGeneratingSummary, week
           {Object.entries(moodMap).map(([k, m]) => <option key={k} value={k}>{m.emoji} {m.label}</option>)}
         </select>
       </div>
-
-      {/* Results count */}
-      <p style={{ fontSize: 12, color: 'var(--muted)' }}>
-        Showing {filtered.length} of {history.length} entries
-        {(search || filterMood) && <button onClick={() => { setSearch(''); setFilterMood(0); setFilterTag(''); }} style={{ background: 'none', border: 'none', color: 'var(--accent)', cursor: 'pointer', fontSize: 12, marginLeft: 8 }}>Clear filters ×</button>}
+      <p style={{ fontSize: 12, color: 'var(--muted)' }}>Showing {filtered.length} of {history.length} entries
+        {(search || filterMood) && <button onClick={() => { setSearch(''); setFilterMood(0); }} style={{ background: 'none', border: 'none', color: 'var(--accent)', cursor: 'pointer', fontSize: 12, marginLeft: 8 }}>Clear ×</button>}
       </p>
-
       {weeklySummary && !isGeneratingSummary && <div className="glass" style={{ padding: 22, borderColor: 'rgba(192,132,252,.3)', background: 'rgba(192,132,252,.07)' }}><p style={{ fontSize: 12, fontWeight: 600, color: '#c084fc', marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.06em' }}>📋 Weekly Summary</p><p style={{ fontSize: 14, lineHeight: 1.7 }}>{weeklySummary}</p></div>}
-
       {filtered.length === 0 ? (
         <div style={{ textAlign: 'center', padding: '60px 0', color: 'var(--muted)' }}>
           <div style={{ fontSize: 40, marginBottom: 12 }}>{search || filterMood ? '🔍' : '📓'}</div>
@@ -327,13 +302,17 @@ const HistoryView = ({ history, handleGenerateSummary, isGeneratingSummary, week
                 <span style={{ display: 'flex', alignItems: 'center', gap: 5, background: m.bg, border: `1px solid ${m.border}`, borderRadius: 99, padding: '4px 12px', fontSize: 13, color: m.color, fontWeight: 600 }}>{m.emoji} {m.label}</span>
               </div>
             </div>
-            {entry.tags?.length > 0 && (
-              <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 10 }}>
-                {entry.tags.map(t => <span key={t} style={{ fontSize: 11, background: 'rgba(129,140,248,.1)', border: '1px solid rgba(129,140,248,.25)', borderRadius: 99, padding: '2px 8px', color: 'var(--accent)' }}>{t}</span>)}
-              </div>
-            )}
+            {entry.tags?.length > 0 && <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 10 }}>{entry.tags.map(t => <span key={t} style={{ fontSize: 11, background: 'rgba(129,140,248,.1)', border: '1px solid rgba(129,140,248,.25)', borderRadius: 99, padding: '2px 8px', color: 'var(--accent)' }}>{t}</span>)}</div>}
             <p style={{ fontSize: 14, lineHeight: 1.7, marginBottom: entry.aiReflection ? 14 : 0 }}>{entry.text}</p>
             {entry.aiReflection && <div style={{ background: 'rgba(129,140,248,.07)', border: '1px solid rgba(129,140,248,.2)', borderRadius: 12, padding: '12px 16px' }}><p style={{ fontSize: 12, color: 'var(--accent)', fontWeight: 600, marginBottom: 4 }}>🌙 Aura's Reflection</p><p style={{ fontSize: 13, color: 'var(--muted)', lineHeight: 1.6 }}>{entry.aiReflection}</p></div>}
+            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 12 }}>
+              <button onClick={() => onDeleteEntry(entry.id)}
+                style={{ background: 'none', border: '1px solid rgba(248,113,113,.25)', borderRadius: 99, padding: '5px 14px', fontSize: 12, color: '#f87171', cursor: 'pointer', fontFamily: 'Sora,sans-serif' }}
+                onMouseEnter={e => e.currentTarget.style.background = 'rgba(248,113,113,.1)'}
+                onMouseLeave={e => e.currentTarget.style.background = 'none'}>
+                🗑️ Delete
+              </button>
+            </div>
           </div>
         );
       })}
@@ -341,7 +320,6 @@ const HistoryView = ({ history, handleGenerateSummary, isGeneratingSummary, week
   );
 };
 
-// ─── Relief View ──────────────────────────────────────────────────────────────
 const BoxPlayer = ({ onBack }) => {
   const phases = ['Breathe In', 'Hold', 'Breathe Out', 'Hold'];
   const [phase, setPhase] = useState(0); const [time, setTime] = useState(4); const [active, setActive] = useState(false); const ref = useRef();
@@ -349,56 +327,30 @@ const BoxPlayer = ({ onBack }) => {
   const cols = ['#818cf8', '#c084fc', '#2dd4bf', '#c084fc'];
   return (<div style={{ maxWidth: 400, margin: '0 auto', textAlign: 'center' }} className="page-enter"><button className="btn btn-ghost" onClick={onBack} style={{ marginBottom: 20, fontSize: 13 }}><Ico icon={Icons.back} size={14} /> Back</button><div className="glass" style={{ padding: 40 }}><h2 style={{ fontSize: 22, fontWeight: 700, marginBottom: 32 }}>Box Breathing</h2><div style={{ position: 'relative', width: 180, height: 180, margin: '0 auto 32px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><div className={`anim-b${phase}`} style={{ position: 'absolute', inset: 0, borderRadius: '50%', background: `radial-gradient(circle,${cols[phase]}33,${cols[phase]}11)`, border: `2px solid ${cols[phase]}66` }} /><div style={{ position: 'relative', zIndex: 1 }}><p style={{ fontSize: 16, fontWeight: 600, color: cols[phase] }}>{phases[phase]}</p><p style={{ fontSize: 52, fontWeight: 700, fontFamily: 'JetBrains Mono,monospace' }}>{time}</p></div></div><div style={{ display: 'flex', gap: 12, justifyContent: 'center' }}><button className="btn btn-primary" onClick={() => setActive(a => !a)} style={{ minWidth: 110 }}>{active ? 'Pause' : 'Start'}</button><button className="btn btn-ghost" onClick={() => { setActive(false); setPhase(0); setTime(4); }}>Reset</button></div></div></div>);
 };
-
 const StepsView = ({ title, steps, onBack }) => (<div style={{ maxWidth: 560, margin: '0 auto' }} className="page-enter"><button className="btn btn-ghost" onClick={onBack} style={{ marginBottom: 20, fontSize: 13 }}><Ico icon={Icons.back} size={14} /> Back</button><div className="glass" style={{ padding: 32 }}><h2 style={{ fontSize: 22, fontWeight: 700, marginBottom: 24, textAlign: 'center' }}>{title}</h2><div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>{steps.map((s, i) => (<div key={i} style={{ display: 'flex', gap: 14, alignItems: 'flex-start', background: 'var(--glass)', border: '1px solid var(--glass-border)', borderRadius: 12, padding: '14px 16px' }}><span style={{ width: 24, height: 24, background: 'linear-gradient(135deg,var(--accent),var(--accent2))', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 700, flexShrink: 0, marginTop: 1 }}>{i + 1}</span><p style={{ fontSize: 14, lineHeight: 1.65 }}>{typeof s === 'object' ? <><strong style={{ color: 'var(--accent)' }}>{s.t}:</strong> {s.d}</> : s}</p></div>))}</div></div></div>);
-
 const AnxietyReliefView = () => {
   const [active, setActive] = useState(null);
   const exs = [{ id: 'box', title: 'Box Breathing', emoji: '🫁', desc: 'Calm your nervous system.' }, { id: 'g', title: '5-4-3-2-1 Grounding', emoji: '🌿', desc: 'Anchor to the present.' }, { id: 'pmr', title: 'Progressive Muscle Relaxation', emoji: '💪', desc: 'Release physical tension.' }, { id: 'm', title: 'Mindful Observation', emoji: '👁️', desc: 'Focus on a single object.' }];
   const gS = [{ t: '5 Things You See', d: 'Name five visible things.' }, { t: '4 Things You Touch', d: 'Feel four surfaces.' }, { t: '3 Things You Hear', d: 'Listen for three sounds.' }, { t: '2 Things You Smell', d: 'Notice two smells.' }, { t: '1 Thing You Taste', d: 'Focus on one taste.' }];
   const pmrS = ['Find a comfortable position and close your eyes.', 'Deep breaths — in through nose, out through mouth.', 'Hands: clench (5s), release (10s).', 'Arms: tense biceps (5s), relax (10s).', 'Continue: forehead, jaw, shoulders, stomach, legs, feet.', 'Breathe between each group.', 'End with 3 deep breaths.'];
-  const mS = ['Choose any small object — pen, coin, or leaf.', 'Hold it — notice weight, texture, temperature.', 'Observe visually — colors, edges, shadows.', 'Tap it. Any sound? Any scent?', 'Spend 2–3 minutes fully present with it.'];
+  const mS = ['Choose any small object — pen, coin, or leaf.', 'Hold it — notice weight, texture, temperature.', 'Observe visually — colors, edges, shadows.', 'Tap it. Any sound? Any scent?', 'Spend 2-3 minutes fully present with it.'];
   if (active === 'box') return <BoxPlayer onBack={() => setActive(null)} />;
   if (active === 'g') return <StepsView title="5-4-3-2-1 Grounding" steps={gS} onBack={() => setActive(null)} />;
   if (active === 'pmr') return <StepsView title="Progressive Muscle Relaxation" steps={pmrS} onBack={() => setActive(null)} />;
   if (active === 'm') return <StepsView title="Mindful Observation" steps={mS} onBack={() => setActive(null)} />;
   return (<div style={{ maxWidth: 640, margin: '0 auto' }} className="page-enter"><div style={{ textAlign: 'center', marginBottom: 20 }}><h2 style={{ fontSize: 24, fontWeight: 700 }}>Relief Exercises</h2><p style={{ color: 'var(--muted)', fontSize: 14, marginTop: 6 }}>Guided techniques to find calm</p></div><AmbientPlayer /><div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>{exs.map(ex => <div key={ex.id} className="glass" style={{ padding: '20px 24px', display: 'flex', alignItems: 'center', gap: 18, cursor: 'pointer' }} onClick={() => setActive(ex.id)}><span style={{ fontSize: 32, flexShrink: 0 }}>{ex.emoji}</span><div style={{ flex: 1 }}><p style={{ fontWeight: 600, fontSize: 16 }}>{ex.title}</p><p style={{ fontSize: 13, color: 'var(--muted)', marginTop: 3 }}>{ex.desc}</p></div><span style={{ color: 'var(--accent)', fontSize: 22 }}>›</span></div>)}</div></div>);
 };
-
-// ─── Achievements View ────────────────────────────────────────────────────────
 const AchievementsView = ({ history, flags }) => {
   const streak = calcStreak(history);
-  return (<div style={{ maxWidth: 680, margin: '0 auto' }} className="page-enter"><div style={{ textAlign: 'center', marginBottom: 28 }}><h2 style={{ fontSize: 24, fontWeight: 700 }}>🏆 Achievements</h2><p style={{ color: 'var(--muted)', fontSize: 14, marginTop: 6 }}>Keep journaling to unlock more!</p></div><div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(180px,1fr))', gap: 14 }}>{ACHIEVEMENTS.map((a, i) => { const unlocked = a.check(history, streak, flags); return (<div key={a.id} className="glass badge-pop" style={{ padding: 22, textAlign: 'center', opacity: unlocked ? 1 : 0.4, border: unlocked ? '1px solid rgba(129,140,248,.4)' : '1px solid var(--glass-border)', animationDelay: `${i * .07}s` }}><div style={{ fontSize: 36, marginBottom: 10, filter: unlocked ? 'none' : 'grayscale(1)' }}>{a.emoji}</div><p style={{ fontWeight: 700, fontSize: 14 }}>{a.title}</p><p style={{ fontSize: 12, color: 'var(--muted)', marginTop: 4 }}>{a.desc}</p>{unlocked && <div style={{ marginTop: 10, fontSize: 11, color: '#4ade80', fontWeight: 600 }}>✓ Unlocked</div>}</div>); })}</div></div>);
+  return (<div style={{ maxWidth: 680, margin: '0 auto' }} className="page-enter"><div style={{ textAlign: 'center', marginBottom: 28 }}><h2 style={{ fontSize: 24, fontWeight: 700 }}>🏆 Achievements</h2><p style={{ color: 'var(--muted)', fontSize: 14, marginTop: 6 }}>Keep journaling to unlock more!</p></div><div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(180px,1fr))', gap: 14 }}>{ACHIEVEMENTS.map((a, i) => { const unlocked = a.check(history, streak, flags); return (<div key={a.id} className="glass badge-pop" style={{ padding: 22, textAlign: 'center', opacity: unlocked ? 1 : 0.4, border: unlocked ? '1px solid rgba(129,140,248,.4)' : '1px solid var(--glass-border)', animationDelay: `${i * .07}s` }}><div style={{ fontSize: 36, marginBottom: 10, filter: unlocked ? 'none' : 'grayscale(1)' }}>{a.emoji}</div><p style={{ fontWeight: 700, fontSize: 14 }}>{a.title}</p><p style={{ fontSize: 12, color: 'var(--muted)', marginTop: 4 }}>{a.desc}</p>{unlocked && <div style={{ marginTop: 10, fontSize: 11, color: '#4ade80', fontWeight: 600 }}>Unlocked</div>}</div>); })}</div></div>);
 };
 
-// ─── Main App ─────────────────────────────────────────────────────────────────
 function App() {
-  const [appScreen, setAppScreen] = useState('loading'); // loading | landing | auth | onboarding | app
+  const [appScreen, setAppScreen] = useState('loading');
   const [session, setSession] = useState(null);
   const [theme, setTheme] = useState(() => localStorage.getItem('mm-theme') || 'dark');
   const [pwaReady, setPwaReady] = useState(false);
   const [pwaInstalled, setPwaInstalled] = useState(false);
-
-  // PWA install prompt
-  useEffect(() => {
-    const onReady = () => setPwaReady(true);
-    const onInstalled = () => { setPwaInstalled(true); setPwaReady(false); };
-    window.addEventListener('pwaInstallReady', onReady);
-    window.addEventListener('pwaInstalled', onInstalled);
-    if (window.__pwaInstallPrompt) setPwaReady(true);
-    return () => {
-      window.removeEventListener('pwaInstallReady', onReady);
-      window.removeEventListener('pwaInstalled', onInstalled);
-    };
-  }, []);
-
-  const handleInstallPWA = async () => {
-    if (!window.__pwaInstallPrompt) return;
-    window.__pwaInstallPrompt.prompt();
-    const { outcome } = await window.__pwaInstallPrompt.userChoice;
-    if (outcome === 'accepted') { setPwaInstalled(true); setPwaReady(false); }
-    window.__pwaInstallPrompt = null;
-  };
   const [view, setView] = useState('dashboard');
   const [journalText, setJournalText] = useState('');
   const [selectedMood, setSelectedMood] = useState(3);
@@ -420,14 +372,31 @@ function App() {
 
   useEffect(() => { localStorage.setItem('mm-theme', theme); }, [theme]);
 
-  // Auth listener
+  useEffect(() => {
+    const onReady = () => setPwaReady(true);
+    const onInstalled = () => { setPwaInstalled(true); setPwaReady(false); };
+    window.addEventListener('pwaInstallReady', onReady);
+    window.addEventListener('pwaInstalled', onInstalled);
+    if (window.__pwaInstallPrompt) setPwaReady(true);
+    return () => { window.removeEventListener('pwaInstallReady', onReady); window.removeEventListener('pwaInstalled', onInstalled); };
+  }, []);
+
+  const handleInstallPWA = async () => {
+    if (!window.__pwaInstallPrompt) return;
+    window.__pwaInstallPrompt.prompt();
+    const { outcome } = await window.__pwaInstallPrompt.userChoice;
+    if (outcome === 'accepted') { setPwaInstalled(true); setPwaReady(false); }
+    window.__pwaInstallPrompt = null;
+  };
+
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       if (!session) setAppScreen('landing');
       else checkOnboarding(session);
     });
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'TOKEN_REFRESHED') return;
       setSession(session);
       if (!session) setAppScreen('landing');
       else checkOnboarding(session);
@@ -440,7 +409,6 @@ function App() {
     setAppScreen(done ? 'app' : 'onboarding');
   };
 
-  // Load history
   useEffect(() => {
     if (!session) { setHistory([]); return; }
     setHistoryLoading(true);
@@ -449,13 +417,12 @@ function App() {
         if (!error && data) setHistory(data.map(e => ({ id: e.id, text: e.text, mood: e.mood, sentiment: e.sentiment, tags: e.tags || [], aiReflection: e.ai_reflection, aiActionableSteps: e.ai_steps || [], timestamp: e.timestamp })));
         setHistoryLoading(false);
       });
-    try { const f = localStorage.getItem(`mm-flags-${session.user.id}`); if (f) setFlags(JSON.parse(f)); } catch {}
-    try { const p = localStorage.getItem(`mm-ach-${session.user.id}`); if (p) prevAch.current = new Set(JSON.parse(p)); } catch {}
+    try { const f = localStorage.getItem(`mm-flags-${session.user.id}`); if (f) setFlags(JSON.parse(f)); } catch { }
+    try { const p = localStorage.getItem(`mm-ach-${session.user.id}`); if (p) prevAch.current = new Set(JSON.parse(p)); } catch { }
   }, [session]);
 
   const saveFlags = (f) => { setFlags(f); if (session) localStorage.setItem(`mm-flags-${session.user.id}`, JSON.stringify(f)); };
 
-  // Achievement checker
   useEffect(() => {
     if (!history.length) return;
     const streak = calcStreak(history);
@@ -495,6 +462,12 @@ function App() {
     setIsLoading(false);
   };
 
+  const handleDeleteEntry = async (entryId) => {
+    if (!session) return;
+    const { error } = await supabase.from('journal_entries').delete().eq('id', entryId).eq('user_id', session.user.id);
+    if (!error) setHistory(prev => prev.filter(e => e.id !== entryId));
+  };
+
   const handleGenerateSummary = async () => {
     const week = new Date(); week.setDate(week.getDate() - 7);
     const recent = history.filter(e => new Date(e.timestamp) > week);
@@ -514,220 +487,147 @@ function App() {
   };
 
   const handleLogout = async () => { await supabase.auth.signOut(); setHistory([]); setAppScreen('landing'); };
+  const handleNavigate = (viewId, opts = {}) => { setView(viewId); if (opts.prefill) setJournalText(opts.prefill); };
 
-  const handleNavigate = (viewId, opts = {}) => {
-    setView(viewId);
-    if (opts.prefill) { setJournalText(opts.prefill); }
-  };
-
-  // Nav links
   const navLinks = [
-    { id: 'dashboard',   label: 'Home',       icon: Icons.home },
-    { id: 'journal',     label: 'Journal',    icon: Icons.journal },
-    { id: 'chat',        label: 'Chat',       icon: Icons.chat },
-    { id: 'predict',     label: 'Predict',    icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg> },
-    { id: 'community',   label: 'Community',  icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> },
-    { id: 'plan',        label: 'Plan',       icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="9" y1="16" x2="9" y2="16" strokeWidth="3"/><line x1="15" y1="16" x2="15" y2="16" strokeWidth="3"/></svg> },
-    { id: 'analytics',   label: 'Analytics',  icon: Icons.chart },
-    { id: 'history',     label: 'History',    icon: Icons.history },
-    { id: 'relief',      label: 'Relief',     icon: Icons.relief },
-    { id: 'achievements',label: 'Badges',     icon: Icons.trophy },
-    { id: 'profile',     label: 'Profile',    icon: Icons.user },
-    { id: 'pricing',     label: 'Pricing',    icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg> },
-    { id: 'doctor',      label: 'Doctor',     icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg> },
+    { id: 'dashboard', label: 'Home', icon: Icons.home },
+    { id: 'journal', label: 'Journal', icon: Icons.journal },
+    { id: 'chat', label: 'Chat', icon: Icons.chat },
+    { id: 'predict', label: 'Predict', icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" /><polyline points="3.27 6.96 12 12.01 20.73 6.96" /><line x1="12" y1="22.08" x2="12" y2="12" /></svg> },
+    { id: 'community', label: 'Community', icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /></svg> },
+    { id: 'plan', label: 'Plan', icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" /></svg> },
+    { id: 'analytics', label: 'Analytics', icon: Icons.chart },
+    { id: 'history', label: 'History', icon: Icons.history },
+    { id: 'relief', label: 'Relief', icon: Icons.relief },
+    { id: 'achievements', label: 'Badges', icon: Icons.trophy },
+    { id: 'profile', label: 'Profile', icon: Icons.user },
+    { id: 'pricing', label: 'Pricing', icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="1" x2="12" y2="23" /><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" /></svg> },
+    { id: 'doctor', label: 'Doctor', icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2" /></svg> },
   ];
 
   const renderView = () => {
     switch (view) {
-      case 'dashboard':    return <DashboardView history={history} onNavigate={handleNavigate} session={session} />;
-      case 'journal':      return <JournalView journalText={journalText} setJournalText={setJournalText} selectedMood={selectedMood} setSelectedMood={setSelectedMood} selectedTags={selectedTags} setSelectedTags={setSelectedTags} handleSubmit={handleSubmit} isLoading={isLoading} aiResponse={aiResponse} getJournalPrompt={getJournalPrompt} isFetchingPrompt={isFetchingPrompt} onVoiceUsed={() => saveFlags({ ...flags, voiceUsed: true })} voiceLang={voiceLang} setVoiceLang={setVoiceLang} />;
-      case 'chat':         return <ChatView />;
-      case 'analytics':    return <AnalyticsView history={history} />;
-      case 'history':      return <HistoryView history={history} handleGenerateSummary={handleGenerateSummary} isGeneratingSummary={isGenSummary} weeklySummary={weeklySummary} onEmailReport={() => {}} onExported={() => saveFlags({ ...flags, exported: true })} />;
-      case 'relief':       return <AnxietyReliefView />;
+      case 'dashboard': return <DashboardView history={history} onNavigate={handleNavigate} session={session} />;
+      case 'journal': return <JournalView journalText={journalText} setJournalText={setJournalText} selectedMood={selectedMood} setSelectedMood={setSelectedMood} selectedTags={selectedTags} setSelectedTags={setSelectedTags} handleSubmit={handleSubmit} isLoading={isLoading} aiResponse={aiResponse} getJournalPrompt={getJournalPrompt} isFetchingPrompt={isFetchingPrompt} onVoiceUsed={() => saveFlags({ ...flags, voiceUsed: true })} voiceLang={voiceLang} setVoiceLang={setVoiceLang} />;
+      case 'chat': return <ChatView />;
+      case 'analytics': return <AnalyticsView history={history} />;
+      case 'history': return <HistoryView history={history} handleGenerateSummary={handleGenerateSummary} isGeneratingSummary={isGenSummary} weeklySummary={weeklySummary} onExported={() => saveFlags({ ...flags, exported: true })} onDeleteEntry={handleDeleteEntry} />;
+      case 'relief': return <AnxietyReliefView />;
       case 'achievements': return <AchievementsView history={history} flags={flags} />;
-      case 'profile':      return <ProfileView session={session} history={history} onLogout={handleLogout} />;
-      case 'predict':      return <MoodPredictionView history={history} />;
-      case 'community':    return <CommunityView session={session} history={history} />;
-      case 'plan':         return <WeeklyPlanView session={session} history={history} />;
-      case 'pricing':      return <PricingView session={session} />;
-      case 'doctor':       return <DoctorConnectView onNavigate={handleNavigate} />;
-      default:             return null;
+      case 'profile': return <ProfileView session={session} history={history} onLogout={handleLogout} />;
+      case 'predict': return <MoodPredictionView history={history} />;
+      case 'community': return <CommunityView session={session} history={history} />;
+      case 'plan': return <WeeklyPlanView session={session} history={history} />;
+      case 'pricing': return <PricingView session={session} />;
+      case 'doctor': return <DoctorConnectView onNavigate={handleNavigate} />;
+      default: return null;
     }
   };
 
-  // ── Screen routing ──
-  if (appScreen === 'loading') return (
-    <>
-      <GlobalStyles theme={theme} />
-      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: 16 }}>
-        <div style={{ fontSize: 52 }}>🌙</div><Spin size={32} /><p style={{ color: 'var(--muted)', fontSize: 14 }}>Loading MoodMate...</p>
-      </div>
-    </>
-  );
+  if (appScreen === 'loading') return (<><GlobalStyles theme={theme} /><div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: 16 }}><div style={{ fontSize: 52 }}>🌙</div><Spin size={32} /><p style={{ color: 'var(--muted)', fontSize: 14 }}>Loading MoodMate...</p></div></>);
+  if (appScreen === 'landing') return (<><GlobalStyles theme={theme} /><LandingPage onGetStarted={() => setAppScreen('auth')} theme={theme} setTheme={setTheme} /></>);
+  if (appScreen === 'auth') return (<><GlobalStyles theme={theme} /><AuthScreen onBack={() => setAppScreen('landing')} /></>);
+  if (appScreen === 'onboarding') return (<><GlobalStyles theme={theme} /><OnboardingPage onComplete={(answers) => { localStorage.setItem(`mm-onboarded-${session.user.id}`, '1'); localStorage.setItem(`mm-onboarding-${session.user.id}`, JSON.stringify(answers)); setAppScreen('app'); }} userName={session?.user?.user_metadata?.full_name || ''} /></>);
 
-  if (appScreen === 'landing') return (
-    <>
-      <GlobalStyles theme={theme} />
-      <LandingPage onGetStarted={() => setAppScreen('auth')} theme={theme} setTheme={setTheme} />
-    </>
-  );
-
-  if (appScreen === 'auth') return (
-    <>
-      <GlobalStyles theme={theme} />
-      <AuthScreen onBack={() => setAppScreen('landing')} />
-    </>
-  );
-
-  if (appScreen === 'onboarding') return (
-    <>
-      <GlobalStyles theme={theme} />
-      <OnboardingPage
-        onComplete={(answers) => {
-          localStorage.setItem(`mm-onboarded-${session.user.id}`, '1');
-          localStorage.setItem(`mm-onboarding-${session.user.id}`, JSON.stringify(answers));
-          setAppScreen('app');
-        }}
-        userName={session?.user?.user_metadata?.full_name || ''}
-      />
-    </>
-  );
-
-  // ── Main App ──
   return (
     <>
       <GlobalStyles theme={theme} />
       <Confetti active={confetti} />
-      <div style={{ minHeight: '100vh', display: 'flex' }}>
 
-        {/* ── Left Sidebar (desktop) ── */}
-        <aside style={{
-          position: 'fixed', top: 0, left: 0, bottom: 0, zIndex: 50,
-          width: 220, display: 'flex', flexDirection: 'column',
-          background: 'var(--nav-bg)', backdropFilter: 'blur(24px)',
-          borderRight: '1px solid var(--glass-border)',
-          padding: '20px 12px',
-          overflowY: 'auto',
-        }} className="desktop-nav">
-          {/* Logo */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer', padding: '4px 8px 20px', borderBottom: '1px solid var(--glass-border)', marginBottom: 12 }}
-            onClick={() => setView('dashboard')}>
-            <div style={{ width: 36, height: 36, background: 'linear-gradient(135deg,#818cf8,#c084fc)', borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, flexShrink: 0 }}>🌙</div>
-            <span style={{ fontSize: 16, fontWeight: 800, background: 'linear-gradient(135deg,#818cf8,#c084fc)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>MoodMate</span>
-          </div>
-
-          {/* Nav links */}
-          <nav style={{ display: 'flex', flexDirection: 'column', gap: 4, flex: 1 }}>
-            {navLinks.map(link => (
-              <button key={link.id} onClick={() => setView(link.id)}
-                style={{
-                  display: 'flex', alignItems: 'center', gap: 10,
-                  padding: '10px 12px', borderRadius: 12, border: 'none', cursor: 'pointer',
-                  fontSize: 13, fontFamily: 'Sora,sans-serif',
-                  fontWeight: view === link.id ? 600 : 400,
-                  background: view === link.id ? 'rgba(129,140,248,.15)' : 'transparent',
-                  color: view === link.id ? '#818cf8' : 'var(--muted)',
-                  transition: 'all .2s', textAlign: 'left', width: '100%',
-                }}>
-                <span style={{ width: 18, height: 18, display: 'inline-flex', flexShrink: 0 }}>{link.icon}</span>
-                {link.label}
-                {view === link.id && <span style={{ marginLeft: 'auto', width: 6, height: 6, background: 'var(--accent)', borderRadius: '50%' }} />}
-              </button>
-            ))}
-          </nav>
-
-          {/* Bottom actions */}
-          <div style={{ borderTop: '1px solid var(--glass-border)', paddingTop: 12, display: 'flex', flexDirection: 'column', gap: 8 }}>
-            <ThemeToggle theme={theme} setTheme={setTheme} />
-            {pwaReady && !pwaInstalled && (
-              <button className="btn btn-primary btn-sm" onClick={handleInstallPWA} style={{ gap: 6, fontSize: 12, width: '100%' }}>
-                📲 Install App
-              </button>
-            )}
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 10px', background: 'var(--glass)', border: '1px solid var(--glass-border)', borderRadius: 10 }}>
-              <div style={{ width: 28, height: 28, background: 'linear-gradient(135deg,#818cf8,#c084fc)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, flexShrink: 0 }}>👤</div>
-              <span style={{ fontSize: 11, color: 'var(--muted)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', flex: 1 }}>{session?.user?.email?.split('@')[0]}</span>
-              <button onClick={handleLogout} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--muted)', display: 'flex', padding: 4 }} title="Logout">
-                <span style={{ width: 15, height: 15, display: 'inline-flex' }}>{Icons.logout}</span>
-              </button>
-            </div>
-          </div>
-        </aside>
-
-        {/* ── Mobile top bar ── */}
-        <div style={{ display: 'none' }} className="mob-topbar">
-          <header style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 50, background: 'var(--nav-bg)', backdropFilter: 'blur(24px)', borderBottom: '1px solid var(--glass-border)', padding: '0 16px', height: 56, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer' }} onClick={() => setView('dashboard')}>
-              <div style={{ width: 30, height: 30, background: 'linear-gradient(135deg,#818cf8,#c084fc)', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 15 }}>🌙</div>
-              <span style={{ fontSize: 15, fontWeight: 800, background: 'linear-gradient(135deg,#818cf8,#c084fc)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>MoodMate</span>
-            </div>
-            <div style={{ display: 'flex', gap: 8 }}>
-              <ThemeToggle theme={theme} setTheme={setTheme} />
-              <button className="btn btn-ghost btn-sm" onClick={() => setMenuOpen(o => !o)} style={{ padding: '8px 10px' }}>
-                <span style={{ width: 20, height: 20, display: 'inline-flex' }}>{menuOpen ? Icons.close : Icons.menu}</span>
-              </button>
-            </div>
-          </header>
+      {/* ── Left Sidebar ── */}
+      <aside style={{ position: 'fixed', top: 0, left: 0, bottom: 0, zIndex: 50, width: 220, display: 'flex', flexDirection: 'column', background: 'var(--nav-bg)', backdropFilter: 'blur(24px)', borderRight: '1px solid var(--glass-border)', padding: '20px 12px', overflowY: 'auto' }} className="desktop-nav">
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer', padding: '4px 8px 20px', borderBottom: '1px solid var(--glass-border)', marginBottom: 12 }} onClick={() => setView('dashboard')}>
+          <div style={{ width: 36, height: 36, background: 'linear-gradient(135deg,#818cf8,#c084fc)', borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, flexShrink: 0 }}>🌙</div>
+          <span style={{ fontSize: 16, fontWeight: 800, background: 'linear-gradient(135deg,#818cf8,#c084fc)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>MoodMate</span>
         </div>
-
-        {/* Fake nav placeholder for desktop - keeps layout */}
-        <div style={{ width: 220, flexShrink: 0 }} className="desktop-nav" />
-
-        </div>
-
-        {/* Mobile Menu */}
-        {menuOpen && (
-          <div style={{ position: 'fixed', inset: 0, zIndex: 45, background: 'var(--bg)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 10, padding: 24, paddingTop: 80 }}>
-            {navLinks.map(link => (
-              <button key={link.id} onClick={() => { setView(link.id); setMenuOpen(false); }}
-                style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '14px 24px', borderRadius: 14, border: '1px solid', borderColor: view === link.id ? 'rgba(129,140,248,.4)' : 'var(--glass-border)', background: view === link.id ? 'rgba(129,140,248,.12)' : 'var(--glass)', color: view === link.id ? '#818cf8' : 'var(--text)', fontSize: 15, fontWeight: 600, fontFamily: 'Sora,sans-serif', cursor: 'pointer', width: '100%', maxWidth: 260 }}>
-                <span style={{ width: 20, height: 20, display: 'inline-flex' }}>{link.icon}</span>{link.label}
-              </button>
-            ))}
-            <button onClick={handleLogout}
-              style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '14px 24px', borderRadius: 14, border: '1px solid rgba(248,113,113,.3)', background: 'rgba(248,113,113,.08)', color: '#f87171', fontSize: 15, fontWeight: 600, fontFamily: 'Sora,sans-serif', cursor: 'pointer', width: '100%', maxWidth: 260, marginTop: 8 }}>
-              <span style={{ width: 20, height: 20, display: 'inline-flex' }}>{Icons.logout}</span>Sign Out
+        <nav style={{ display: 'flex', flexDirection: 'column', gap: 4, flex: 1 }}>
+          {navLinks.map(link => (
+            <button key={link.id} onClick={() => setView(link.id)}
+              style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 12px', borderRadius: 12, border: 'none', cursor: 'pointer', fontSize: 13, fontFamily: 'Sora,sans-serif', fontWeight: view === link.id ? 600 : 400, background: view === link.id ? 'rgba(129,140,248,.15)' : 'transparent', color: view === link.id ? '#818cf8' : 'var(--muted)', transition: 'all .2s', textAlign: 'left', width: '100%' }}>
+              <span style={{ width: 18, height: 18, display: 'inline-flex', flexShrink: 0 }}>{link.icon}</span>
+              {link.label}
+              {view === link.id && <span style={{ marginLeft: 'auto', width: 6, height: 6, background: 'var(--accent)', borderRadius: '50%' }} />}
+            </button>
+          ))}
+        </nav>
+        <div style={{ borderTop: '1px solid var(--glass-border)', paddingTop: 12, display: 'flex', flexDirection: 'column', gap: 8 }}>
+          <ThemeToggle theme={theme} setTheme={setTheme} />
+          {pwaReady && !pwaInstalled && <button className="btn btn-primary btn-sm" onClick={handleInstallPWA} style={{ gap: 6, fontSize: 12, width: '100%' }}>📲 Install App</button>}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 10px', background: 'var(--glass)', border: '1px solid var(--glass-border)', borderRadius: 10 }}>
+            <div style={{ width: 28, height: 28, background: 'linear-gradient(135deg,#818cf8,#c084fc)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, flexShrink: 0 }}>👤</div>
+            <span style={{ fontSize: 11, color: 'var(--muted)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', flex: 1 }}>{session?.user?.email?.split('@')[0]}</span>
+            <button onClick={handleLogout} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--muted)', display: 'flex', padding: 4 }} title="Logout">
+              <span style={{ width: 15, height: 15, display: 'inline-flex' }}>{Icons.logout}</span>
             </button>
           </div>
-        )}
+        </div>
+      </aside>
 
-        {error && <div onClick={() => setError('')} style={{ position: 'fixed', bottom: 24, left: '50%', transform: 'translateX(-50%)', background: 'rgba(248,113,113,.15)', border: '1px solid rgba(248,113,113,.4)', borderRadius: 12, padding: '12px 20px', fontSize: 14, color: '#fca5a5', zIndex: 100, cursor: 'pointer', backdropFilter: 'blur(12px)', whiteSpace: 'nowrap', maxWidth: '90vw', textAlign: 'center' }}>⚠️ {error}</div>}
-        {unlockedBadge && <AchievementToast achievement={unlockedBadge} onDone={() => setUnlockedBadge(null)} />}
+      {/* ── Mobile top bar ── */}
+      <div style={{ display: 'none' }} className="mob-topbar">
+        <header style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 50, background: 'var(--nav-bg)', backdropFilter: 'blur(24px)', borderBottom: '1px solid var(--glass-border)', padding: '0 16px', height: 56, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer' }} onClick={() => setView('dashboard')}>
+            <div style={{ width: 30, height: 30, background: 'linear-gradient(135deg,#818cf8,#c084fc)', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 15 }}>🌙</div>
+            <span style={{ fontSize: 15, fontWeight: 800, background: 'linear-gradient(135deg,#818cf8,#c084fc)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>MoodMate</span>
+          </div>
+          <div style={{ display: 'flex', gap: 8 }}>
+            <ThemeToggle theme={theme} setTheme={setTheme} />
+            <button className="btn btn-ghost btn-sm" onClick={() => setMenuOpen(o => !o)} style={{ padding: '8px 10px' }}>
+              <span style={{ width: 20, height: 20, display: 'inline-flex' }}>{menuOpen ? Icons.close : Icons.menu}</span>
+            </button>
+          </div>
+        </header>
+      </div>
 
-        {/* ── Main content ── */}
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: '100vh', overflow: 'auto' }}>
-        <main style={{ flex: 1, padding: '28px 28px 40px', maxWidth: 960, width: '100%', margin: '0 auto' }} className="main-content">
-          {historyLoading ? (
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', paddingTop: 80, gap: 12, flexDirection: 'column' }}>
-              <Spin size={32} /><p style={{ color: 'var(--muted)', fontSize: 14 }}>Loading your journal...</p>
-            </div>
-          ) : (
-            <div key={view}>{renderView()}</div>
-          )}
-        </main>
+      {/* ── Mobile Menu ── */}
+      {menuOpen && (
+        <div style={{ position: 'fixed', inset: 0, zIndex: 45, background: 'var(--bg)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 10, padding: 24, paddingTop: 80 }}>
+          {navLinks.map(link => (
+            <button key={link.id} onClick={() => { setView(link.id); setMenuOpen(false); }}
+              style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '14px 24px', borderRadius: 14, border: '1px solid', borderColor: view === link.id ? 'rgba(129,140,248,.4)' : 'var(--glass-border)', background: view === link.id ? 'rgba(129,140,248,.12)' : 'var(--glass)', color: view === link.id ? '#818cf8' : 'var(--text)', fontSize: 15, fontWeight: 600, fontFamily: 'Sora,sans-serif', cursor: 'pointer', width: '100%', maxWidth: 260 }}>
+              <span style={{ width: 20, height: 20, display: 'inline-flex' }}>{link.icon}</span>{link.label}
+            </button>
+          ))}
+          <button onClick={handleLogout} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '14px 24px', borderRadius: 14, border: '1px solid rgba(248,113,113,.3)', background: 'rgba(248,113,113,.08)', color: '#f87171', fontSize: 15, fontWeight: 600, fontFamily: 'Sora,sans-serif', cursor: 'pointer', width: '100%', maxWidth: 260, marginTop: 8 }}>
+            <span style={{ width: 20, height: 20, display: 'inline-flex' }}>{Icons.logout}</span>Sign Out
+          </button>
+        </div>
+      )}
 
-        {/* PWA Install Banner */}
-        {pwaReady && !pwaInstalled && (
-          <div style={{ position:'fixed', bottom:0, left:0, right:0, zIndex:200, background:'linear-gradient(135deg,rgba(129,140,248,0.95),rgba(192,132,252,0.95))', backdropFilter:'blur(16px)', padding:'14px 20px', display:'flex', alignItems:'center', justifyContent:'space-between', gap:12 }} className="hide-desktop">
-            <div style={{ display:'flex', alignItems:'center', gap:10 }}>
-              <span style={{ fontSize:28 }}>📲</span>
-              <div>
-                <p style={{ fontSize:14, fontWeight:700, color:'white' }}>Install MoodMate</p>
-                <p style={{ fontSize:12, color:'rgba(255,255,255,0.8)' }}>Add to home screen for best experience</p>
+      {/* ── Error & Badges ── */}
+      {error && <div onClick={() => setError('')} style={{ position: 'fixed', bottom: 24, left: '50%', transform: 'translateX(-50%)', background: 'rgba(248,113,113,.15)', border: '1px solid rgba(248,113,113,.4)', borderRadius: 12, padding: '12px 20px', fontSize: 14, color: '#fca5a5', zIndex: 100, cursor: 'pointer', backdropFilter: 'blur(12px)', whiteSpace: 'nowrap', maxWidth: '90vw', textAlign: 'center' }}>⚠️ {error}</div>}
+      {unlockedBadge && <AchievementToast achievement={unlockedBadge} onDone={() => setUnlockedBadge(null)} />}
+
+      {/* ── Main Layout ── */}
+      <div style={{ display: 'flex', minHeight: '100vh' }}>
+        <div style={{ width: 220, flexShrink: 0 }} className="desktop-nav" />
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+          <main style={{ flex: 1, padding: '24px 28px 40px', maxWidth: 960, width: '100%', margin: '0 auto' }} className="main-content">
+            {historyLoading ? (
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', paddingTop: 80, gap: 12, flexDirection: 'column' }}>
+                <Spin size={32} /><p style={{ color: 'var(--muted)', fontSize: 14 }}>Loading your journal...</p>
+              </div>
+            ) : (
+              <div key={view}>{renderView()}</div>
+            )}
+          </main>
+          {pwaReady && !pwaInstalled && (
+            <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 200, background: 'linear-gradient(135deg,rgba(129,140,248,0.95),rgba(192,132,252,0.95))', backdropFilter: 'blur(16px)', padding: '14px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }} className="hide-desktop">
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                <span style={{ fontSize: 28 }}>📲</span>
+                <div><p style={{ fontSize: 14, fontWeight: 700, color: 'white' }}>Install MoodMate</p><p style={{ fontSize: 12, color: 'rgba(255,255,255,0.8)' }}>Add to home screen</p></div>
+              </div>
+              <div style={{ display: 'flex', gap: 8, flexShrink: 0 }}>
+                <button onClick={() => setPwaReady(false)} style={{ background: 'rgba(255,255,255,0.2)', border: '1px solid rgba(255,255,255,0.3)', borderRadius: 99, padding: '7px 14px', color: 'white', fontSize: 12, cursor: 'pointer', fontFamily: 'Sora,sans-serif' }}>Later</button>
+                <button onClick={handleInstallPWA} style={{ background: 'white', border: 'none', borderRadius: 99, padding: '7px 16px', color: '#818cf8', fontWeight: 700, fontSize: 12, cursor: 'pointer', fontFamily: 'Sora,sans-serif' }}>Install</button>
               </div>
             </div>
-            <div style={{ display:'flex', gap:8, flexShrink:0 }}>
-              <button onClick={() => setPwaReady(false)} style={{ background:'rgba(255,255,255,0.2)', border:'1px solid rgba(255,255,255,0.3)', borderRadius:99, padding:'7px 14px', color:'white', fontSize:12, cursor:'pointer', fontFamily:'Sora,sans-serif' }}>Later</button>
-              <button onClick={handleInstallPWA} style={{ background:'white', border:'none', borderRadius:99, padding:'7px 16px', color:'#818cf8', fontWeight:700, fontSize:12, cursor:'pointer', fontFamily:'Sora,sans-serif' }}>Install ✓</button>
-            </div>
-          </div>
-        )}
-
-        <footer style={{ textAlign: 'center', padding: '20px 24px', borderTop: '1px solid var(--glass-border)', color: 'var(--muted)', fontSize: 12 }}>
-          <p>Not a substitute for professional medical advice · Data secured with Supabase</p>
-          <p style={{ marginTop: 4, opacity: .6 }}>Made with ❤️ by Aryan Jaiswal & Alok Jha</p>
-        </footer>
+          )}
+          <footer style={{ textAlign: 'center', padding: '16px 24px', borderTop: '1px solid var(--glass-border)', color: 'var(--muted)', fontSize: 11 }}>
+            <p>Not a substitute for professional medical advice · Data secured with Supabase</p>
+            <p style={{ marginTop: 3, opacity: .5 }}>Made with ❤️ by Aryan Jaiswal & Alok Jha</p>
+          </footer>
+        </div>
       </div>
     </>
   );
