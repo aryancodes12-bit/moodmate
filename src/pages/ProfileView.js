@@ -219,7 +219,7 @@ const ProfileView = ({ session, history, onLogout }) => {
           {/* Test notification */}
           {permission === 'granted' && (
             <button className="btn btn-ghost" style={{ marginTop: 20, gap: 8 }}
-              onClick={() => new Notification('MoodMate 🌙', { body: "This is a test reminder! Your journaling journey continues. ✍️", icon: '/favicon.ico' })}>
+              onClick={() => new Notification('MoodMate 🌙', { body: "This is a test notification! Your journaling journey continues. ✍️", icon: '/sidebar.png' })}>
               🔔 Send Test Notification
             </button>
           )}

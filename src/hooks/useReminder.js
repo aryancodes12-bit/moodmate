@@ -52,8 +52,8 @@ const useReminder = (userId) => {
       if (Notification.permission === 'granted') {
         const notif = new Notification('MoodMate 🌙', {
           body: "Time to journal! How are you feeling today? ✍️",
-          icon: '/favicon.ico',
-          badge: '/favicon.ico',
+          icon: '/sidebar.png',
+          badge: '/sidebar.png',
           tag: 'moodmate-daily',
           requireInteraction: false,
         });
@@ -81,7 +81,7 @@ const useReminder = (userId) => {
     // Show confirmation notification immediately
     new Notification('MoodMate 🌙', {
       body: `Daily reminder set for ${formatTime(timeStr)}! We'll remind you to journal every day. 🎉`,
-      icon: '/favicon.ico',
+      icon: '/sidebar.png',
       tag: 'moodmate-setup',
     });
 
