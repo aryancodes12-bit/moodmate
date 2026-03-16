@@ -540,14 +540,25 @@ function App() {
           <div style={{ width: 36, height: 36, background: 'linear-gradient(135deg,#818cf8,#c084fc)', borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, flexShrink: 0 }}>🌙</div>
           <span style={{ fontSize: 16, fontWeight: 800, background: 'linear-gradient(135deg,#818cf8,#c084fc)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>MoodMate</span>
         </div>
-        <nav style={{ display: 'flex', flexDirection: 'column', gap: 4, flex: 1 }}>
-          {navLinks.map(link => (
-            <button key={link.id} onClick={() => setView(link.id)}
-              style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 12px', borderRadius: 12, border: 'none', cursor: 'pointer', fontSize: 13, fontFamily: 'Sora,sans-serif', fontWeight: view === link.id ? 600 : 400, background: view === link.id ? 'rgba(129,140,248,.15)' : 'transparent', color: view === link.id ? '#818cf8' : 'var(--muted)', transition: 'all .2s', textAlign: 'left', width: '100%' }}>
-              <span style={{ width: 18, height: 18, display: 'inline-flex', flexShrink: 0 }}>{link.icon}</span>
-              {link.label}
-              {view === link.id && <span style={{ marginLeft: 'auto', width: 6, height: 6, background: 'var(--accent)', borderRadius: '50%' }} />}
-            </button>
+        <nav style={{ display: 'flex', flexDirection: 'column', gap: 1, flex: 1, overflowY: 'auto' }}>
+          {[
+            { label: null, ids: ['dashboard', 'journal', 'chat'] },
+            { label: 'AI', ids: ['predict', 'community', 'plan'] },
+            { label: 'INSIGHTS', ids: ['analytics', 'history'] },
+            { label: 'WELLNESS', ids: ['relief', 'achievements'] },
+            { label: 'ACCOUNT', ids: ['profile', 'pricing', 'doctor'] },
+          ].map((group, gi) => (
+            <div key={gi} style={{ marginBottom: 4 }}>
+              {group.label && <p style={{ fontSize: 9, fontWeight: 700, color: 'var(--muted)', opacity: 0.45, letterSpacing: '0.1em', padding: '8px 12px 3px' }}>{group.label}</p>}
+              {navLinks.filter(l => group.ids.includes(l.id)).map(link => (
+                <button key={link.id} onClick={() => setView(link.id)}
+                  style={{ display: 'flex', alignItems: 'center', gap: 9, padding: '8px 12px', borderRadius: 10, border: 'none', cursor: 'pointer', fontSize: 12, fontFamily: 'Sora,sans-serif', fontWeight: view === link.id ? 600 : 400, background: view === link.id ? 'rgba(129,140,248,.15)' : 'transparent', color: view === link.id ? '#818cf8' : 'var(--muted)', transition: 'all .2s', textAlign: 'left', width: '100%' }}>
+                  <span style={{ width: 15, height: 15, display: 'inline-flex', flexShrink: 0, opacity: view === link.id ? 1 : 0.65 }}>{link.icon}</span>
+                  {link.label}
+                  {view === link.id && <span style={{ marginLeft: 'auto', width: 5, height: 5, background: 'var(--accent)', borderRadius: '50%' }} />}
+                </button>
+              ))}
+            </div>
           ))}
         </nav>
         <div style={{ borderTop: '1px solid var(--glass-border)', paddingTop: 12, display: 'flex', flexDirection: 'column', gap: 8 }}>
