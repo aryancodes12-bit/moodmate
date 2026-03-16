@@ -636,7 +636,7 @@ function App() {
           )}
           <footer style={{ textAlign: 'center', padding: '16px 24px', borderTop: '1px solid var(--glass-border)', color: 'var(--muted)', fontSize: 11 }}>
             <p>Not a substitute for professional medical advice · Data secured with Supabase</p>
-            <p style={{ marginTop: 3, opacity: .5 }}>Made with ❤️ by Aryan Jaiswal & Alok Jha</p>
+            <p style={{ marginTop: 3, opacity: .5 }}>Made with ❤️ by the MoodMate Team</p>
           </footer>
         </div>
       </div>

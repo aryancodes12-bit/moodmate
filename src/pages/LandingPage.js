@@ -227,7 +227,7 @@ const LandingPage = ({ onGetStarted, theme, setTheme }) => {
           <span style={{ fontWeight:700, color:'var(--text)' }}>MoodMate</span>
         </div>
         <p>Not a substitute for professional medical advice.</p>
-        <p style={{ marginTop:4, opacity:.6 }}>Made with ❤️ by Aryan Jaiswal & Alok Jha</p>
+        <p style={{ marginTop:4, opacity:.6 }}>Made with ❤️ by the MoodMate Team</p>
       </footer>
     </div>
   );
